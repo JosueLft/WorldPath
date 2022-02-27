@@ -9,6 +9,7 @@ public class ShooterSystems : MonoBehaviour {
     public float aimMaxDistance = 100;
     public GameObject ammunitionsPrefab;
     public Transform ammunitionsRespawn;
+    public GameObject aimCanvas;
     StarterAssetsInputs input;
     ThirdPersonController tpController;
     Camera mainCamera;
@@ -49,12 +50,14 @@ public class ShooterSystems : MonoBehaviour {
             aimPosition = ray.origin + ray.direction * aimMaxDistance;
         }
         if(input.aim) {
+            aimCanvas.SetActive(true);
             animator.SetLayerWeight(1, 1);
             tpController.SetRotateOnMove(false);
             aimCamera.SetActive(true);
             float yawCamera = mainCamera.transform.rotation.eulerAngles.y;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, yawCamera, 0), Time.deltaTime * rotateSpeed);
         } else {
+            aimCanvas.SetActive(false);
             animator.SetLayerWeight(1, 0);
             aimCamera.SetActive(false);
             tpController.SetRotateOnMove(true);
