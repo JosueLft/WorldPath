@@ -25,7 +25,7 @@ public class Arrow : MonoBehaviour {
     }
 
     private void OnCollisionEnter(Collision collision) {
-        Destroy(gameObject, 10);
+        Destroy(gameObject, 1);
     }
 
     void LimiteTimeRespawn() {
