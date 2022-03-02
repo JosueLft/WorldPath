@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class Arrow : MonoBehaviour {
 
@@ -31,6 +33,12 @@ public class Arrow : MonoBehaviour {
     void LimiteTimeRespawn() {
         if(time >= endTime) {
             Destroy(gameObject, 1);
+        }
+    }
+
+    void OnTriggerEnter(Collider collider) {
+        if(collider.gameObject.CompareTag("Pllayer") && collider.GetComponent<PhotonView>().IsMine) {
+            collider.GetComponent<Player>().Damages(10);
         }
     }
 }

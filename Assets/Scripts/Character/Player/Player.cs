@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class Player : MonoBehaviour 
-{
+[RequireComponent(typeof(GameManager))]
+public class Player : MonoBehaviour {
+
   public Entity entity;
 
     [Header("Player Regen System")]
@@ -20,17 +23,20 @@ public class Player : MonoBehaviour
     public GameManager manager;
 
     [Header("Player UI")]
-    public Slider health;
-    public Slider mana;
-    public Slider exp;
+    public Slider HPSlider;
+    public Slider MPSlider;
+    public Slider EXPSlider;
     public Text currentHP;
     public Text currentMP;
     public Text level;
     public Text levelPercentage;
 
+    PhotonView pv;
+
     void Start() {
         if(manager == null) {
             Debug.LogFormat("Você precisa anexar o game manager aqui no player");
+            manager = GetComponent<GameManager>();
             return;
         }
 
@@ -42,15 +48,15 @@ public class Player : MonoBehaviour
         entity.currentMana = entity.maxMana;
         entity.currentStamina = entity.maxStamina;
 
-        health.maxValue = entity.maxHealth;
-        health.value = health.maxValue;
+        HPSlider.maxValue = entity.maxHealth;
+        HPSlider.value = HPSlider.maxValue;
         currentHP.text = entity.maxHealth.ToString();
 
-        mana.maxValue = entity.maxMana;
-        mana.value = mana.maxValue;
+        MPSlider.maxValue = entity.maxMana;
+        MPSlider.value = MPSlider.maxValue;
         currentMP.text = entity.maxMana.ToString();
 
-        exp.value = entity.exp;
+        EXPSlider.value = entity.exp;
         levelPercentage.text = "0.00%";
         level.text = "lvl. " + entity.level;
 
@@ -66,13 +72,13 @@ public class Player : MonoBehaviour
         if(entity.currentHealth <= 0) {
             Die();
         }
-        health.value = entity.currentHealth;
+        HPSlider.value = entity.currentHealth;
         currentHP.text = entity.currentHealth + " / " + entity.maxHealth;
-        mana.value = entity.currentMana;
+        MPSlider.value = entity.currentMana;
         currentMP.text = entity.currentMana + " / " + entity.maxMana;
 
         level.text = "lvl. " + entity.level;
-        exp.value = entity.exp;
+        EXPSlider.value = entity.exp;
         levelPercentage.text = "0.00%";
     }
 
@@ -111,5 +117,13 @@ public class Player : MonoBehaviour
         entity.dead = true;
         entity.target = null;
         StopAllCoroutines();
+    }
+
+    public void Damages(int valueDamage) {
+        pv.RPC("TakeDamage", RpcTarget.AllBuffered, valueDamage);
+    }
+
+    void TakeDamage(int damage) {
+        entity.currentHealth -= damage/100;
     }
 }

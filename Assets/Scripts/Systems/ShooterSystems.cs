@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StarterAssets;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class ShooterSystems : MonoBehaviour {
     public GameObject aimCamera;
@@ -15,6 +17,7 @@ public class ShooterSystems : MonoBehaviour {
     Camera mainCamera;
     Vector3 aimPosition = Vector3.zero;
     Animator animator;
+    PhotonView pv;
 
     void Start() {
         input = GetComponent<StarterAssetsInputs>();
@@ -26,7 +29,8 @@ public class ShooterSystems : MonoBehaviour {
     void Update() {
         OnCollisionEnter();
         OnAim();
-        OnShot();
+        pv.RPC("OnShot", RpcTarget.All);
+        //OnShot();
     }
 
     void OnCollisionEnter() {
@@ -64,11 +68,13 @@ public class ShooterSystems : MonoBehaviour {
         }
     }
 
+    [PunRPC]
     public void OnShot() {
         if (input.shot && input.aim) {
             input.shot = false;
             Vector3 bulletDirection = (aimPosition - ammunitionsRespawn.position).normalized;
             Instantiate(ammunitionsPrefab, ammunitionsRespawn.position, Quaternion.LookRotation(bulletDirection)); //Quaternion.LookRotation(): Olha pra uma direção e transforma em um quaternion
+            //PhotonNetwork.Instantiate(ammunitionsPrefab.name, ammunitionsRespawn.position, Quaternion.LookRotation(bulletDirection));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 #if UNITY_EDITOR
 [ExecuteInEditMode]
@@ -50,7 +51,7 @@ public class TGSky : MonoBehaviour
     //--------------------------------------------------------------------------
     void Start()
     {
-
+        hour = DateTime.Now.Hour + (DateTime.Now.Minute / 60);
     }
 
     //--------------------------------------------------------------------------

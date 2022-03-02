@@ -20,12 +20,12 @@ public class Monster : MonoBehaviour {
     public bool respawn = true;
     public float respawnTime = 10f; // tempo de respawn em segundos
 
-    Rigidbody rigidbody;
+    Rigidbody rigidb;
     Animator animator;
     NavMeshAgent agent;
 
     private void Start() {
-        rigidbody = GetComponent<Rigidbody>();
+        rigidb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         manager = GameObject.Find("GameManager").GetComponent<GameManager>();
 
